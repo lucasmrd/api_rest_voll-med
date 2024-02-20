@@ -1,0 +1,20 @@
+version: '3.1'
+
+services:
+  db:
+    image: mysql:8.0.31
+    volumes:
+      - dbbase:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: vollmed_api2
+
+  phpmyadmin:
+    image: phpmyadmin
+    ports:
+      - 8000:80
+
+volumes:
+  dbbase:
