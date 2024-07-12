@@ -1,7 +1,21 @@
-FROM openjdk
+FROM maven:3.8.5-openjdk-17-slim AS build
 
 WORKDIR /app
 
-COPY target/api2-0.0.1-SNAPSHOT.jar /app/api2.jar
+COPY pom.xml .
 
-ENTRYPOINT ["java", "-jar", "api2.jar"]
+RUN mvn dependency:go-offline -B
+
+COPY src ./src
+
+RUN mvn clean package -DskipTests
+
+FROM openjdk:17-jdk-slim
+
+WORKDIR /app
+
+COPY --from=build /app/target/*.jar app.jar
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "app.jar"]
